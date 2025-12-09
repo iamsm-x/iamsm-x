@@ -75,8 +75,9 @@
 
 <h2 align="center">🐍 GitHub Contribution Snake</h2>
 <p align="center">
-  <img src="https://github.com/iamsm-x/iamsm-x/blob/output/snake.svg" alt="Snake animation" />
+  <img src="https://raw.githubusercontent.com/iamsm-x/iamsm-x/output/dist/snake.svg" alt="Snake animation" />
 </p>
+
 
 ---
 
