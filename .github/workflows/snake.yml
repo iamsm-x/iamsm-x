@@ -1,0 +1,49 @@
+name: Generate Snake Animation
+
+on:
+  schedule:
+    - cron: "0 */12 * * *"    
+  workflow_dispatch:        
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository (persist credentials)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Setup Node (required by Platane/snk)
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+
+      - name: Generate Snake SVG
+        uses: Platane/snk@v3
+        with:
+          github_user_name: iamsm-x
+          outputs: dist/snake.svg
+
+      - name: Configure git for commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Prepare dist (show generated file)
+        run: |
+          ls -la dist || true
+          test -f dist/snake.svg && echo "snake.svg found" || echo "snake.svg missing"
+
+      - name: Push generated files to output branch
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # create-or-switch output branch
+          git switch --create output || git switch output
+          # ensure dist is added
+          git add -f dist || true
+          git commit -m "chore: update snake.svg [ci skip]" || echo "No changes to commit"
+          git push origin output --force
